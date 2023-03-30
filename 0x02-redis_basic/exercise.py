@@ -4,14 +4,14 @@
 import redis
 from uuid import uuid4
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 
 def count_calls(method: Callable) -> Callable:
     """ Decorator for Cache class methods to track call count
     """
     @wraps(method)
-    def wrapper(self: Any, *args: List, **kwargs: Dict) -> str:
+    def wrapper(self: Any, *args, **kwargs) -> str:
         """ Wraps called method and adds its call count redis before execution
         """
         self._redis.incr(method.__qualname__)
@@ -23,7 +23,7 @@ def call_history(method: Callable) -> Callable:
     """ Decorator for Cache class method to track args
     """
     @wraps(method)
-    def wrapper(self: Any, *args: List) -> str:
+    def wrapper(self: Any, *args) -> str:
         """ Wraps called method and tracks its passed argument by storing
             them to redis
         """
