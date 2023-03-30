@@ -21,7 +21,8 @@ def get_cache(fn: Callable) -> Callable:
         if cached_page:
             return cached_page.decode('utf-8')
         response = fn(url)
-        client.set(f'{url}', response, ex=10)
+        client.set(f'count:{url}', 0)
+        client.setex(f'{url}', response, ex=10)
         return response
     return wrapper
 
