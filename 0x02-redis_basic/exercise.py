@@ -4,7 +4,7 @@
 import redis
 from uuid import uuid4
 from functools import wraps
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, List, Optional, Union
 
 
 # def count_calls(method: Callable) -> Callable:
@@ -31,12 +31,14 @@ class Cache:
         client.set(key, data)
         return key
 
-    def get(self, key: str, fn: Callable) -> Any:
+    def get(self, key: str, fn: Optional[Callable] = None) -> Any:
         """ Gets key's value from redis and converts
             result byte  into correct data type
         """
         client = self._redis
         value = client.get(key)
+        if not value:
+            return
         if fn is int:
             return self.get_int(value)
         if fn is str:
