@@ -7,11 +7,11 @@ from functools import wraps
 from typing import Any, Callable, List, Union
 
 
-def count_calls(method: Callable) -> Callable:
-    """ Decorator for Cache class methods
-    """
-    def wrapper(*args: List) -> Callable:
-        pass
+# def count_calls(method: Callable) -> Callable:
+#     """ Decorator for Cache class methods
+#     """
+#     def wrapper(*args: List) -> Callable:
+#         pass
 
 
 class Cache:
@@ -41,7 +41,7 @@ class Cache:
             return self.get_int(value)
         if fn is str:
             return self.get_str(value)
-        if fn:
+        if callable(fn):
             return fn(value)
         return value
 
