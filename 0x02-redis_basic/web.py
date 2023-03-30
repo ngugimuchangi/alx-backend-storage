@@ -24,8 +24,8 @@ def track_get_page(fn: Callable) -> Callable:
             return cached_data.decode('utf-8')
         response = fn(url)
         client.incr('count:{url}')
-        client.set(f'cached:{url}', response)
-        client.expire(f'cached:{url}', 10)
+        # client.set(f'cached:{url}', response)
+        # client.expire(f'cached:{url}', 10)
         return response
     return wrapper
 
