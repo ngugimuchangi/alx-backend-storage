@@ -7,11 +7,19 @@ from functools import wraps
 from typing import Any, Callable, List, Optional, Union
 
 
-# def count_calls(method: Callable) -> Callable:
-#     """ Decorator for Cache class methods
-#     """
-#     def wrapper(*args: List) -> Callable:
-#         pass
+def count_calls(method: Callable) -> Callable:
+    """ Decorator for Cache class methods
+    """
+    @wraps(method)
+    def wrapper(*args) -> Callable:
+        """ Wraps called method and adds its call count
+            o redis before execution
+        """
+        redis_client = args[0]._redis
+        method_name = method.__qualname__
+        redis_client.incrby(method_name)
+        return method(*args)
+    return wrapper
 
 
 class Cache:
@@ -23,6 +31,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes,  int,  float]) -> str:
         """ Stores data in redis with randomly generated key
         """
