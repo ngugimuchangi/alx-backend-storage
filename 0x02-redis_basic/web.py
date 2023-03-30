@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
+Caching request module
 """
 import redis
 import requests
-from typing import Callable, Tuple, Dict
+from typing import Callable
 
 
 def call_count(fn: Callable) -> Callable:
