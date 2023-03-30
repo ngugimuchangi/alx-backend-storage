@@ -6,6 +6,8 @@ import redis
 import requests
 from typing import Callable
 
+client = redis.Redis()
+
 
 def get_cache(fn: Callable) -> Callable:
     """ Decorator for get_page
@@ -15,7 +17,6 @@ def get_cache(fn: Callable) -> Callable:
             - check whether a url's data is cached
             - tracks how many times get_page is called
         """
-        client = redis.Redis()
         client.incr(f'count:{url}')
         cached_page = client.get(f'result:{url}')
         if cached_page:
