@@ -14,11 +14,12 @@ def track_get_page(fn: Callable) -> Callable:
     """ Decorator for get_page
     """
     @wraps(fn)
-    def wrapper(url: str) -> str:
+    def wrapper(*args, **kwargs) -> str:
         """ Wrapper that:
             - check whether a url's data is cached
             - tracks how many times get_page is called
         """
+        url = args[0]
         client.incr(f'count:{url}')
         cached_data = client.get(f'{{url}}')
         if cached_data:
