@@ -7,31 +7,28 @@ import requests
 from typing import Callable
 
 
-def call_count(fn: Callable) -> Callable:
+def get_cache(fn: Callable) -> Callable:
     """ Decorator for get_page
     """
-    def wrapper(*args, **kwargs) -> str:
+    def wrapper(url: str) -> str:
         """ Wrapper that:
-            - check whether a page is cached
+            - check whether a url's data is cached
             - tracks how many times get_page is called
         """
-        url = args[0]
         client = redis.Redis()
+        client.incr(f'count:{url}')
         cached_page = client.get(url)
         if cached_page:
             return cached_page.decode('utf-8')
-        response = fn(*args, **kwargs)
-        client.incr(f'count:{url}')
-        client.set(f'{url}', response, 10)
+        response = fn(url)
+        client.set(f'{url}', response, ex=10)
         return response
     return wrapper
 
-@call_count
-def make_request(url: str) -> str:
-    response = requests.get(url)
-    return response.text
 
+@get_cache
 def get_page(url: str) -> str:
     """ Makes a http request to a given endpoint
     """
-    return make_request(url)
+    response = requests.get(url)
+    return response.text
