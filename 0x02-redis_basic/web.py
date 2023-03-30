@@ -22,7 +22,7 @@ def track_get_page(fn: Callable) -> Callable:
         if cached_data:
             return cached_data.decode('utf-8')
         response = fn(url)
-        client.incr(f'count:{url}')
+        client.incr(f'count:{{url}}')
         client.set(f'cached:{url}', response)
         client.expire(f'cached:{url}', 10)
         return response
