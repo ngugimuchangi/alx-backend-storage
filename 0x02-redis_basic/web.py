@@ -19,12 +19,13 @@ def track_get_page(fn: Callable) -> Callable:
             - check whether a url's data is cached
             - tracks how many times get_page is called
         """
-        cached_data = client.get(f'{url}')
+        cached_data = client.get(f'cached:{url}')
         if cached_data:
             return cached_data.decode('utf-8')
         response = fn(url)
-        client.set(f'{url}', response)
-        client.expire(f'{url}', 10)
+        client.incr('count:{url}')
+        client.set(f'cached:{url}', response)
+        client.expire(f'cached:{url}', 10)
         return response
     return wrapper
 
@@ -33,7 +34,5 @@ def track_get_page(fn: Callable) -> Callable:
 def get_page(url: str) -> str:
     """ Makes a http request to a given endpoint
     """
-    client.incr(f'count:{{url}}')
-    client.incr(f'count:{url}')
     response = requests.get(url)
     return response.text
