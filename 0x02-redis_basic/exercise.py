@@ -17,7 +17,7 @@ def count_calls(method: Callable) -> Callable:
         """
         redis_client = args[0]._redis
         method_name = method.__qualname__
-        redis_client.incrby(method_name)
+        redis_client.incr(method_name)
         return method(*args)
     return wrapper
 
