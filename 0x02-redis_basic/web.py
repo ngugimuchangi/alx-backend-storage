@@ -31,8 +31,6 @@ def make_request(url: str) -> str:
     response = requests.get(url)
     return response.text
 
-
-@call_count
 def get_page(url: str) -> str:
     """ Makes a http request to a given endpoint
     """
