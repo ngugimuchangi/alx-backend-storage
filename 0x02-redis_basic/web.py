@@ -5,18 +5,19 @@ Caching request module
 import redis
 import requests
 from typing import Callable
-
-client = redis.Redis()
+from functools import wraps
 
 
 def track_get_page(fn: Callable) -> Callable:
     """ Decorator for get_page
     """
+    @wraps(fn)
     def wrapper(url: str) -> str:
         """ Wrapper that:
             - check whether a url's data is cached
             - tracks how many times get_page is called
         """
+        client = redis.Redis()
         cached_data = client.get(f'cached:{url}')
         if cached_data:
             return cached_data.decode('utf-8')
