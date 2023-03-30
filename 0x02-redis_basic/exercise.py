@@ -8,14 +8,30 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 
 def count_calls(method: Callable) -> Callable:
-    """ Decorator for Cache class methods
+    """ Decorator for Cache class methods to track call count
     """
     @wraps(method)
-    def wrapper(self: Any, *args: List, **kwargs: Dict) -> Callable:
+    def wrapper(self: Any, *args: List, **kwargs: Dict) -> str:
         """ Wraps called method and adds its call count redis before execution
         """
         self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
+    return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    """ Decorator for Cache class method to track args
+    """
+    @wraps(method)
+    def wrapper(self: Any, *args: List) -> str:
+        """ Wraps called method and tracks its passed argument by storing
+            them to redis
+        """
+        client: redis.Redis = self._redis
+        client.rpush(f'{method.__qualname__}:inputs', str(args))
+        output = method(self, *args)
+        client.rpush(f'{method.__qualname__}:outputs', output)
+        return output
     return wrapper
 
 
@@ -28,6 +44,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes,  int,  float]) -> str:
         """ Stores data in redis with randomly generated key
