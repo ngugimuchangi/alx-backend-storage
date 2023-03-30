@@ -17,7 +17,7 @@ def get_cache(fn: Callable) -> Callable:
         """
         client = redis.Redis()
         client.incr(f'count:{url}')
-        cached_page = client.get(url)
+        cached_page = client.get(f'result:{url}')
         if cached_page:
             return cached_page.decode('utf-8')
         response = fn(url)
