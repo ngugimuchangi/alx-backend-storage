@@ -26,10 +26,14 @@ def call_count(fn: Callable) -> Callable:
         return response
     return wrapper
 
+@call_count
+def make_request(url: str) -> str:
+    response = requests.get(url)
+    return response.text
+
 
 @call_count
 def get_page(url: str) -> str:
     """ Makes a http request to a given endpoint
     """
-    response = requests.get(url)
-    return response.text
+    return make_request(url)
