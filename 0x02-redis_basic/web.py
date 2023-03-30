@@ -9,7 +9,7 @@ from typing import Callable
 client = redis.Redis()
 
 
-def get_cache(fn: Callable) -> Callable:
+def track_get_page(fn: Callable) -> Callable:
     """ Decorator for get_page
     """
     def wrapper(url: str) -> str:
@@ -17,17 +17,17 @@ def get_cache(fn: Callable) -> Callable:
             - check whether a url's data is cached
             - tracks how many times get_page is called
         """
-        cached_page = client.get(url)
-        if cached_page:
-            client.incr(f'count:{url}')
-            return cached_page.decode('utf-8')
+        cached_data = client.get(f'cached:{url}')
+        if cached_data:
+            return cached_data.decode('utf-8')
         response = fn(url)
-        client.setex(url, 10, response)
+        client.incr(f'count:{url}')
+        client.setex(f'cached{url}', 10, response)
         return response
     return wrapper
 
 
-@get_cache
+@track_get_page
 def get_page(url: str) -> str:
     """ Makes a http request to a given endpoint
     """
