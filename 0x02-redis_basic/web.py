@@ -17,12 +17,11 @@ def get_cache(fn: Callable) -> Callable:
             - check whether a url's data is cached
             - tracks how many times get_page is called
         """
-        client.incr(f'count:{url}')
         cached_page = client.get(url)
         if cached_page:
+            client.incr(f'count:{url}')
             return cached_page.decode('utf-8')
         response = fn(url)
-        # client.set(f'count:{url}', 0)
         client.setex(url, 10, response)
         return response
     return wrapper
