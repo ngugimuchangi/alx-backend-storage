@@ -11,14 +11,12 @@ def count_calls(method: Callable) -> Callable:
     """ Decorator for Cache class methods
     """
     @wraps(method)
-    def wrapper(*args) -> Callable:
+    def wrapper(self: Any, data: Union[str, bytes,  int,  float]) -> Callable:
         """ Wraps called method and adds its call count
             o redis before execution
         """
-        redis_client = args[0]._redis
-        method_name = method.__qualname__
-        redis_client.incr(method_name)
-        return method(*args)
+        self._redis.incr(method.__qualname__)
+        return method(self, data)
     return wrapper
 
 
