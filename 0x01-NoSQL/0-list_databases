@@ -1,0 +1,2 @@
+// Scrip that list all databases in MongoDB
+show databases
