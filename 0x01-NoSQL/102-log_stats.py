@@ -44,7 +44,7 @@ def print_nginx_stats():
     print(f'{status_path_stats} status check')
     print('IPs:')
     for ip in top_ips:
-        print(f'{ip.get("_id")}: {ip.get("count")}')
+        print(f'\t{ip.get("_id")}: {ip.get("count")}')
 
 
 if __name__ == '__main__':
