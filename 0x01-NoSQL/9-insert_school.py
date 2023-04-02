@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PyMongo Operations
+PyMongo operations: inserting new documents
 """
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PyMongo operations - update
+PyMongo operations: updating documents
 """
 
 
