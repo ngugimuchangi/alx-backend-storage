@@ -3,9 +3,10 @@
 Aggregation operations
 """
 from pymongo import MongoClient
+from typing import Tuple
 
 
-def get_nginx_stats():
+def get_nginx_stats() -> Tuple:
     """
     Queries nginx collection for specific data
     Return:
@@ -13,7 +14,7 @@ def get_nginx_stats():
         - count of each method in the collection
         - count of each GET calls to /status path
     """
-    client = MongoClient()
+    client: MongoClient = MongoClient()
     db = client.logs
     collection = db.nginx
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
@@ -28,7 +29,7 @@ def get_nginx_stats():
     return count, method_stats, status_path_stats
 
 
-def print_nginx_stats():
+def print_nginx_stats() -> None:
     """
     Prints stats from nginx query
     """

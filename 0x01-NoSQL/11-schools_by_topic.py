@@ -2,9 +2,11 @@
 """
 PyMongo operations: matching data in list
 """
+from pymongo.collection import Collection
+from pymongo.cursor import Cursor
 
 
-def schools_by_topic(mongo_collection, topic):
+def schools_by_topic(mongo_collection: Collection, topic: str) -> Cursor:
     """
     Finds a list of school having a specific topic
     """

@@ -4,8 +4,10 @@ Aggregation operations
 """
 from pymongo import MongoClient
 from collections import OrderedDict
+from typing import Tuple
 
-def get_nginx_stats():
+
+def get_nginx_stats() -> Tuple:
     """
     Queries nginx collection for specific data
     Return:
@@ -14,7 +16,7 @@ def get_nginx_stats():
         - count of each GET calls to /status path
         - count of top 10 visited ips
     """
-    client = MongoClient()
+    client: MongoClient = MongoClient()
     db = client.logs
     collection = db.nginx
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
@@ -25,14 +27,15 @@ def get_nginx_stats():
     count = collection.estimated_document_count()
     status_path_stats = collection.count_documents({'method': 'GET',
                                                     'path': '/status'})
-    top_ips = collection.aggregate([{'$group': {'_id': '$ip', 'count': {'$sum': 1}}},
-                                    {'$sort': OrderedDict([('count', -1)])},
-                                    {'$limit': 10}])
+    pipeline = [{'$group': {'_id': '$ip', 'count': {'$sum': 1}}},
+                {'$sort': OrderedDict([('count', -1)])},
+                {'$limit': 10}]
+    top_ips = collection.aggregate(pipeline)
     client.close()
     return count, method_stats, status_path_stats, top_ips
 
 
-def print_nginx_stats():
+def print_nginx_stats() -> None:
     """
     Prints stats from nginx query
     """
