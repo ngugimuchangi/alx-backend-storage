@@ -2,11 +2,9 @@
 """
 PyMongo operations: updating documents
 """
-from pymongo.collection import Collection
 
 
-def update_topics(mongo_collection: Collection,
-                  name: str, topics: str) -> None:
+def update_topics(mongo_collection, name, topics):
     """
     Updates topics field with given topics for
     documents whose name field matches given name

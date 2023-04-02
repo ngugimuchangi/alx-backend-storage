@@ -3,10 +3,9 @@
 Aggregation operations: average
 """
 from collections import OrderedDict
-from pymongo.collection import Collection
 
 
-def top_students(mongo_collection: Collection):
+def top_students(mongo_collection):
     """
     Gets list of students from mongo collection
     and returns the list of computed average for
