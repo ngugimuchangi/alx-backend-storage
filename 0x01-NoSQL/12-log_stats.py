@@ -3,15 +3,7 @@
 Aggregation operations
 """
 from pymongo import MongoClient
-
-
-def sorting_func(method_dict):
-    """
-    Returns tuple of elements to use for sorting
-    in the right order
-    """
-    dict_items = list(method_dict.items())
-    return (dict_items[1], dict_items[0])
+from operator import itemgetter
 
 
 def get_nginx_stats():
@@ -30,7 +22,7 @@ def get_nginx_stats():
     for method in methods:
         count = collection.count_documents({'method': method})
         method_stats.append({'method': method, 'count': count})
-    method_stats.sort(key=sorting_func, reverse=True)
+    method_stats.sort(key=itemgetter('count'), reverse=True)
     count = collection.estimated_document_count()
     status_path_stats = collection.count_documents({'method': 'GET',
                                                     'path': '/status'})
