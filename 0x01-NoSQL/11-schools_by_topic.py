@@ -8,4 +8,4 @@ def school_by_topic(mongo_collection, topic):
     """
     Finds a list of school having a specific topic
     """
-    return mongo_collection.find({'topics': topic})
+    return mongo_collection.find({'topics': {'$in': [topic]}})
