@@ -20,21 +20,21 @@ def get_nginx_stats() -> Tuple:
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
     method_stats = []
     for method in methods:
-        count = collection.count_documents({'method': method})
-        method_stats.append({'method': method, 'count': count})
-    count = collection.estimated_document_count()
+        method_count = collection.count_documents({'method': method})
+        method_stats.append({'method': method, 'count': method_count})
+    doc_count = collection.estimated_document_count()
     status_path_stats = collection.count_documents({'method': 'GET',
                                                     'path': '/status'})
     client.close()
-    return count, method_stats, status_path_stats
+    return doc_count, method_stats, status_path_stats
 
 
 def print_nginx_stats() -> None:
     """
     Prints stats from nginx query
     """
-    count, method_stats, status_path_stats = get_nginx_stats()
-    print(f'{count} logs')
+    doc_count, method_stats, status_path_stats = get_nginx_stats()
+    print(f'{doc_count} logs')
     print('Methods:')
     for method in method_stats:
         print(f'\tmethod {method.get("method")}: {method.get("count")}')
