@@ -3,7 +3,6 @@
 Aggregation operations
 """
 from pymongo import MongoClient
-from operator import itemgetter
 
 
 def get_nginx_stats():
@@ -22,7 +21,6 @@ def get_nginx_stats():
     for method in methods:
         count = collection.count_documents({'method': method})
         method_stats.append({'method': method, 'count': count})
-    method_stats.sort(key=itemgetter('count'), reverse=True)
     count = collection.estimated_document_count()
     status_path_stats = collection.count_documents({'method': 'GET',
                                                     'path': '/status'})
