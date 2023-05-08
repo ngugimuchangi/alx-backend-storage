@@ -29,3 +29,4 @@ BEGIN
     SET average_weight_score = total_weight_score / @total_projects_weight;
     UPDATE users SET average_score = average_weight_score WHERE id = user_id;
 END$
+DELIMITER ;
